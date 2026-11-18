@@ -5,6 +5,7 @@ from __future__ import annotations
 import math
 import re
 from dataclasses import dataclass
+from typing import Any, cast
 
 import numpy as np
 from nltk.stem import PorterStemmer
@@ -57,7 +58,9 @@ class SearchIndex:
         self._tfidf = TfidfVectorizer(analyzer=tokenize, lowercase=False)
         self._tfidf_matrix = self._tfidf.fit_transform(self._texts)
         self._counts = CountVectorizer(analyzer=tokenize, lowercase=False)
-        self._count_matrix = self._counts.fit_transform(self._texts).tocsr()
+        # scikit-learn returns SciPy sparse matrices here; its stubs expose them
+        # as ndarrays, so keep the boundary explicit for Pyrefly.
+        self._count_matrix: Any = self._counts.fit_transform(self._texts)
         # CSC stores each term's posting list contiguously for BM25 lookup.
         self._postings = self._count_matrix.tocsc()
         self._lengths = np.asarray(self._count_matrix.sum(axis=1)).ravel()
@@ -81,7 +84,7 @@ class SearchIndex:
             query_vector = self._tfidf.transform([query])
             scores = (self._tfidf_matrix @ query_vector.T).toarray().ravel()
         else:
-            query_vector = self._counts.transform([query]).tocsr()
+            query_vector = cast(Any, self._counts.transform([query]))
             scores = self._bm25_scores(query_vector)
 
         # Stable descending sort preserves corpus order when scores tie.
@@ -107,12 +110,13 @@ class SearchIndex:
         scores = np.zeros(self._n_docs, dtype=np.float64)
         query_terms = query_vector.indices
         for term_id in query_terms:
-            postings = self._postings[:, term_id].tocoo()
+            start = int(self._postings.indptr[term_id])
+            stop = int(self._postings.indptr[term_id + 1])
+            doc_indices = self._postings.indices[start:stop]
             df = int(self._doc_freq[term_id])
             # Robertson-Sparck Jones IDF; it remains positive for SciFact terms.
             idf = math.log1p((self._n_docs - df + 0.5) / (df + 0.5))
-            tf = postings.data.astype(np.float64)
-            doc_indices = postings.row
+            tf = self._postings.data[start:stop].astype(np.float64)
             norm = tf + self.k1 * (
                 1.0 - self.b + self.b * self._lengths[doc_indices] / self._avg_length
             )

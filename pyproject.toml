@@ -19,6 +19,10 @@ dependencies = [
 [project.scripts]
 examen01-jla = "examen01_jla:main"
 
+[tool.pyrefly]
+search-path = ["src"]
+python-interpreter-path = ".venv/bin/python"
+
 [build-system]
 requires = ["uv_build>=0.13.8,<0.14.0"]
 build-backend = "uv_build"

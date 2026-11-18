@@ -1,4 +1,9 @@
 # Examen 1BIM — Recuperación de Información
+### Estudiante:
+- Jose Luis Andino
+
+### Fecha de Entrega:
+- miércoles, 18 de noviembre de 2026, 13:15
 
 Implementación para el corpus **SciFact**: una unidad indexada por documento original, preprocesamiento en inglés con minúsculas, eliminación de stopwords y stemming Porter, TF-IDF con coseno y BM25. Los juicios de relevancia se cargan únicamente de la partición `test` para evaluar.
 
@@ -8,6 +13,8 @@ Implementación para el corpus **SciFact**: una unidad indexada por documento or
 uv sync
 uv run uvicorn examen01_jla.api:app --host 0.0.0.0 --port 8000
 ```
+
+Como alternativa, inicia el servidor local con `uv run examen01-jla`.
 
 La primera carga descarga SciFact mediante `ir_datasets`. La API ofrece `GET /health` y `POST /search`:
 
