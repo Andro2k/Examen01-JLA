@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: examen01-jla
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn examen01_jla.api:app --host 0.0.0.0 --port $PORT

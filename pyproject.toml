@@ -1,13 +1,20 @@
 [project]
 name = "examen01-jla"
 version = "0.1.0"
-description = "Add your description here"
+description = "SciFact information retrieval exam: TF-IDF and BM25"
 readme = "README.md"
 authors = [
     { name = "Andro2K", email = "kirito100crack@gmail.com" }
 ]
-requires-python = ">=3.14"
-dependencies = []
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.115,<1",
+    "ir-datasets>=0.5.9,<1",
+    "nltk>=3.9,<4",
+    "numpy>=1.26,<3",
+    "scikit-learn>=1.5,<2",
+    "uvicorn[standard]>=0.30,<1",
+]
 
 [project.scripts]
 examen01-jla = "examen01_jla:main"
