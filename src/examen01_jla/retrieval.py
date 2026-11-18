@@ -5,6 +5,7 @@ from __future__ import annotations
 import math
 import re
 from dataclasses import dataclass
+from functools import lru_cache
 from typing import Any, cast
 
 import numpy as np
@@ -25,10 +26,16 @@ _STOPWORDS = frozenset(
 _STEMMER = PorterStemmer()
 
 
+@lru_cache(maxsize=200_000)
+def _stem(token: str) -> str:
+    """Porter stemming with a cache: the corpus repeats the same words constantly."""
+    return _STEMMER.stem(token)
+
+
 def tokenize(text: str) -> list[str]:
     """Lowercase, remove English stopwords, and apply Porter stemming."""
     return [
-        _STEMMER.stem(token)
+        _stem(token)
         for token in _TOKEN.findall(text.lower())
         if token not in _STOPWORDS
     ]
