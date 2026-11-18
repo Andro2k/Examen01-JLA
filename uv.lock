@@ -270,7 +270,6 @@ source = { editable = "." }
 dependencies = [
     { name = "fastapi", version = "0.162.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "fastapi", version = "0.164.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
-    { name = "ir-datasets" },
     { name = "nltk" },
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
@@ -280,15 +279,22 @@ dependencies = [
     { name = "uvicorn", extra = ["standard"] },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "ir-datasets" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "fastapi", specifier = ">=0.115,<1" },
-    { name = "ir-datasets", specifier = ">=0.5.9,<1" },
     { name = "nltk", specifier = ">=3.9,<4" },
     { name = "numpy", specifier = ">=1.26,<3" },
     { name = "scikit-learn", specifier = ">=1.5,<2" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.30,<1" },
 ]
+
+[package.metadata.requires-dev]
+dev = [{ name = "ir-datasets", specifier = ">=0.5.9,<1" }]
 
 [[package]]
 name = "exceptiongroup"

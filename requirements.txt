@@ -1,5 +1,4 @@
 fastapi>=0.115,<1
-ir-datasets>=0.5.9,<1
 nltk>=3.9,<4
 numpy>=1.26,<3
 scikit-learn>=1.5,<2

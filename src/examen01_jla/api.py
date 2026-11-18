@@ -1,20 +1,27 @@
 """FastAPI endpoints for the SciFact retriever."""
 
+from contextlib import asynccontextmanager
 from functools import lru_cache
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
-from examen01_jla.data import load_scifact
+from examen01_jla.data import load_documents
 from examen01_jla.retrieval import SearchIndex
-
-app = FastAPI(title="SciFact Information Retrieval", version="1.0.0")
 
 
 @lru_cache(maxsize=1)
 def get_index() -> SearchIndex:
-    documents, _, _ = load_scifact("test")
-    return SearchIndex(documents)
+    return SearchIndex(load_documents())
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    get_index()  # build the index at startup, not on the first request
+    yield
+
+
+app = FastAPI(title="SciFact Information Retrieval", version="1.0.0", lifespan=lifespan)
 
 
 class SearchRequest(BaseModel):
